@@ -12,8 +12,8 @@ import math
 from scipy import stats
 
 
-# data = np.genfromtxt("tree_height.txt", delimiter=" ")
-data = np.genfromtxt("/nfs/a1/homes/eeehu/Santiago/satellite_data/SPOT7/POINT_CLOUD/extract_points/road3.txt", delimiter=" ")
+folder = "/nfs/a1/homes/eeehu/Santiago/satellite_data/SPOT7/POINT_CLOUD/extract_points/"
+data = np.genfromtxt(folder + "road3.txt", delimiter=" ")
 
 bin_width = 0.00036      # 40 metres in degrees
 
@@ -56,4 +56,4 @@ plt.plot(output[:, 0], output[:, 2], 'r')
 plt.show()
 
 # save output to ascii file
-# np.savetxt("binned_profile3.txt", output, delimiter="\t", fmt="%0.5f")
+np.savetxt(folder + "binned_profile3.txt", output, delimiter="\t", fmt="%0.5f")
