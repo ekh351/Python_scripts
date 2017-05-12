@@ -20,8 +20,8 @@ bin_width = 0.00036      # 40 metres in degrees
 # determine the number of bins needed
 nbins = int(math.ceil((data[:, 0].max() - data[:, 0].min())/bin_width))
 
-# pre-assign output array
-output = np.empty([nbins, 6], dtype=float)
+# pre-assign a nan output array
+output = np.empty([nbins, 6], dtype=float) * np.nan
 
 # bin the data
 for i in range(0, nbins):
@@ -32,37 +32,27 @@ for i in range(0, nbins):
     (ix,) = np.where((data[:, 0] > xl) & (data[:, 0] <= xu))
     binnedDat = data[ix, :]
 
-    # remove points outside the 5 and 90 percentile
+    # remove points outside the 5 and 90 percentile (noise)
     pct = stats.scoreatpercentile(data[ix, 2], (5, 90))
     (ix2,) = np.where((binnedDat[:, 2] > pct[0]) & (binnedDat[:, 2] <= pct[1]))
 
-    # remove points outside +/- 5m of mean in each bin
-    medianH = np.median(binnedDat[:, 2])
-    meanH = binnedDat[ix2, 2].mean()
-    (ix3,) = np.where((binnedDat[:, 2] >= (meanH - 2)) &
-             (binnedDat[:, 2] < (meanH + 4)))
+    if len(binnedDat[ix2, 1]) > 3:
+        medH = np.median(binnedDat[ix2, 2])
+        std = np.std(binnedDat[ix2, 2])
+        medLon = np.median(binnedDat[ix2, 0])
+        medLat = np.median(binnedDat[ix2, 1])
+        pct2 = stats.scoreatpercentile(binnedDat[ix2, 2], (5, 95))
 
-    avgLon = binnedDat[ix3, 0].mean()
-    avgLat = binnedDat[ix3, 1].mean()
-    avgH = binnedDat[ix3, 2].mean()
-    pct2 = stats.scoreatpercentile(binnedDat[ix3, 2], (5, 95))
-
-    output[i, 0] = avgLon
-    output[i, 1] = avgLat
-    output[i, 2] = avgH
-    output[i, 3] = pct2[0]
-    output[i, 4] = pct2[1]
-    output[i, 5] = medianH    
+        # add results to the output array
+        output[i, :] = np.array([medLon, medLat, medH, std, pct2[0], pct2[1]])
 
 # remove any rows with nans from the output file
 output = output[~np.isnan(output).any(axis=1)]
 
+# plot and check results make sense
 plt.figure()
 plt.plot(data[:, 0], data[:, 2], 'k.')
 plt.plot(output[:, 0], output[:, 2], 'r')
-plt.plot(output[:, 0], output[:, 5], 'g')
-# plt.plot(output[:, 0], output[:, 3], 'b')
-# plt.plot(output[:, 0], output[:, 4], 'g')
 plt.show()
 
 # save output to ascii file
