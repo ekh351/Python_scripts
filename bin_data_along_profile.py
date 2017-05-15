@@ -11,9 +11,10 @@ import matplotlib.pyplot as plt
 import math
 from scipy import stats
 
+roadID = 6
 
 folder = "/nfs/a1/homes/eeehu/Santiago/satellite_data/SPOT7/POINT_CLOUD/extract_points/"
-data = np.genfromtxt(folder + "road3.txt", delimiter=" ")
+data = np.genfromtxt(folder+"road"+str(roadID)+".txt", delimiter=" ")
 
 bin_width = 0.00036      # 40 metres in degrees
 
@@ -56,4 +57,4 @@ plt.plot(output[:, 0], output[:, 2], 'r')
 plt.show()
 
 # save output to ascii file
-np.savetxt(folder + "binned_profile3.txt", output, delimiter="\t", fmt="%0.5f")
+np.savetxt(folder+"bin_profile/binned_profile"+str(roadID)+".txt", output, delimiter="\t", fmt="%0.5f")
