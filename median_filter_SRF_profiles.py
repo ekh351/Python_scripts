@@ -55,9 +55,9 @@ def median_filter(data, ID, bin_width):
             medH = np.median(binnedDat[ix2, 3])
             pct2 = stats.scoreatpercentile(binnedDat[ix2, 3], (5, 95))
 
-        # add results to the output array
-        output[i, :] = np.array(
-                [medLon, medLat, medLoc, medH, pct2[0], pct2[1]])
+            # add results to the output array
+            output[i, :] = np.array(
+                    [medLon, medLat, medLoc, medH, pct2[0], pct2[1]])
 
     # remove any rows with nans from the output file
     return output[~np.isnan(output).any(axis=1)]
@@ -77,5 +77,5 @@ for ID in range(1, nprofs+1):
 #    plt.show()
 
     # save file
-    outfile = folder+"binned_prof"+str(ID)+".txt"
+    outfile = folder+"profs_res5/binned_prof"+str(ID)+".txt"
     np.savetxt(outfile, output, delimiter="\t", fmt="%0.5f")
